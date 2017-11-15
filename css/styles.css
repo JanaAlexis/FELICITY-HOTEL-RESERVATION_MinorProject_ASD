@@ -1,0 +1,14 @@
+.navbar{
+	margin-bottom: 0px;
+	width: 100%;
+}
+.container{
+	width: 100%;
+	margin: 0px auto;
+	padding: 0px;
+	max-height: 250px;
+}
+.container-fluid{
+	margin: 0px auto;
+	padding: 0px;
+}

@@ -1,0 +1,22 @@
+.container {
+    width: 30%;
+    height: 600px;
+    background-color: gray;
+    margin-top: 50px;
+  
+}
+.form_class {
+    padding: 20px;
+}
+
+input {
+    width: 60%;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.form_fields {
+    text-align: center;
+}
+
+
