@@ -1,0 +1,116 @@
+body{
+	background-color: white;
+}
+
+/* buttons */
+.btn{
+	border-radius: 0;
+}
+.btn-fontgray{
+	color: gray;
+}
+
+/* containers */
+.container-fluid{
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.container-padding{
+	padding: 15px;
+}
+
+/* dashboard header */
+.breadcrumb{
+	margin-bottom: 10px;
+	border-radius: 0;
+}
+
+/* dropdown */
+.dropdown-menu{
+	border-radius: 0;
+}
+
+/* images */
+.form-control{
+	border-radius: 0;
+}
+
+/* images */
+.adminicon{
+	background-color: #f5f5f5;
+	border: 1px solid #f5f5f5; 
+	width: 300px;
+	height: 250px;
+}
+
+.carousel-inner > .item > img{
+	width: 100%;
+	height: 450px;
+}
+
+.carousel-control{
+	width: 100px;
+	height: 450px;
+}
+
+.user-icon{
+	border: 1px solid #e7e7e7;
+	background-color: #e7e7e7;
+}
+
+.tbl-img{
+	width: 100px;
+	height: 100px;
+}
+
+/* links */
+a{
+	color: #333;
+}
+
+/* modal */
+.modal-body {
+   overflow-y: scroll;
+}
+.modal-content{
+	border-radius: 0;
+}
+#addnew-modal div .row input{
+	width: 100px;
+}
+
+/* navbar */
+.nav-container{
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.navbar{
+	margin-bottom: 0px;
+}
+
+#signup-modal .modal-body{
+	padding-bottom: 45px;
+}
+
+/* panel */
+.panel{
+	border-radius: 0;
+}
+
+/* table */
+th {
+    text-align: center;
+	border: 1px solid #ddd;
+}
+td{
+	border: 1px solid #ddd;
+}
+
+.tbl-num{
+	text-align: right;
+}
+
+.tbl-center{
+	text-align: center;
+}
