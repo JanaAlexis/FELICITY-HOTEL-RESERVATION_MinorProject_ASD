@@ -17,11 +17,13 @@
                         
                         if ($user == "admin" || $user == "Admin" || $user == "ADMIN"){
                             $user = strtolower($user);
+                            $hashedpassword = md5($pass);
                             //sql query to fetch information of registered user and finds user match
-                            $query = mysqli_query($conn, "SELECT * FROM employee WHERE password='".$pass."' AND username='".$user."'");
+                            $query = mysqli_query($conn, "SELECT * FROM employee WHERE password='".$hashedpassword."' AND username='".$user."'");
                             
                             if($query){
                                 if(mysqli_num_rows($query) < 1){
+                                        $_SESSION['user'] = $user;
                                     header("Location: index.php?page=login&msg=invalid");
                                 }else{
                                     
@@ -31,7 +33,7 @@
                                         $_SESSION['userId'] = $row['employeeID'];
                                         $_SESSION['firstname'] = $row['firstName'];
                                         $_SESSION['lastname'] = $row['lastName'];
-                                        $_SESSION['user'] = $row['username'];;
+                                        $_SESSION['user'] = $row['username'];
                                     }
                                     header("Location: admindashboard.php");
                                     //echo $_SESSION['userStatus'];
@@ -41,10 +43,12 @@
                             }
                         }else{
                             if(strchr($user, "@") && strchr($user, ".")){
-                                $query = mysqli_query($conn, "SELECT * FROM customer WHERE password='".$pass."' AND email='".$user."'");
+                                $hashedpassword = md5($pass);
+                                $query = mysqli_query($conn, "SELECT * FROM customer WHERE password='".$hashedpassword."' AND email='".$user."'");
                             
                                 if($query){
                                     if(mysqli_num_rows($query) < 1){
+                                        $_SESSION['user'] = $user;
                                         header("Location: index.php?page=login&msg=invalid");
                                     }else{
                                         
@@ -54,7 +58,7 @@
                                         $_SESSION['userId'] = $row['customerID'];
                                         $_SESSION['firstname'] = $row['firstName'];
                                         $_SESSION['lastname'] = $row['lastName'];
-                                        $_SESSION['email'] = $row['email'];;
+                                        $_SESSION['user'] = $row['email'];
                                         }
                                         header("Location: rooms.php");
                                     }
@@ -87,33 +91,47 @@
                         $rows = mysqli_fetch_assoc($check);
                         $filter = $rows['email'];
                         
-                        if($filter){
-                            // Declare sessions to display previous data in modal
-                            $_SESSION['firstname'] = $rows['firstName'];
-                            $_SESSION['lastname'] = $rows['lastName'];
-                            $_SESSION['email'] = $rows['email'];
-                            header("Location: index.php?page=signup&msg=existing");
-                            
-                        }else{
-                            //create user
-                            $query = "INSERT INTO customer (firstName, lastName, email, password, status) VALUES ('$firstName','$lastName','$email','$password','activated')";
-                            
-                            $insertquery = mysqli_query($conn, $query);
-                            
-                            //check if data is in the database
-                            if($insertquery){
-                                
-                                $_SESSION['userStatus'] = 2; //tracks who is the user
-                                
-                                $_SESSION['userId'] = $rows['customerID'];
+                            if($filter){
+                                // Declare sessions to display previous data in modal
                                 $_SESSION['firstname'] = $rows['firstName'];
                                 $_SESSION['lastname'] = $rows['lastName'];
                                 $_SESSION['email'] = $rows['email'];
+                                header("Location: index.php?page=signup&msg=existing");
                                 
-                                header("Location: rooms.php?page=signup&msg=success");
+                            }else{
+                                $passCount = strlen($password);
+                                echo $passCount;
+
+                                if($passCount>=6){
+                                    $hashedpassword = md5($password);
+                                    //create user
+                                    $query = "INSERT INTO customer (firstName, lastName, email, password, status) VALUES ('$firstName','$lastName','$email','$hashedpassword','Activated')";
+                                    
+                                    $insertquery = mysqli_query($conn, $query);
+                                    
+                                    //check if data is in the database
+                                    if($insertquery){
+                                        
+                                        $_SESSION['userStatus'] = 2; //tracks who is the user
+                                        
+                                        $_SESSION['userId'] = $rows['customerID'];
+                                        $_SESSION['firstname'] = $rows['firstName'];
+                                        $_SESSION['lastname'] = $rows['lastName'];
+                                        $_SESSION['user'] = $rows['email'];
+                                        unset($_SESSION['email']);
+                                        
+                                        header("Location: rooms.php?page=signup&msg=success");
+                                    }
+                                }else{
+                                    $_SESSION['firstname'] = $firstName;
+                                    $_SESSION['lastname'] = $lastName;
+                                    $_SESSION['email'] = $email;
+                                    $_SESSION['pass'] = $password;
+                                    header("Location: index.php?page=signup&msg=invalidpass");
+                                }
+                                
                             }
-                            
-                        }
+
                     }else{
                         // Declare sessions to display previous data in modal
                         $_SESSION['firstname'] = $firstName;

@@ -11,11 +11,18 @@
                     $single = $_POST['singleBed'];
                     $double = $_POST['doubleBed'];
                     $persons  = $_POST['numPersons'];
+                    $roomprice  = $_POST['roomPrice'];
+                    $addpersonprice  = $_POST['addPersonPrice'];
                     $status = $_POST['roomStatus'];
                     
                     $roomname = strtoupper($roomname);
 
                     $query;
+
+                    
+                  if(is_uploaded_file($_FILES['image']['tmp_name'])) {
+                   
+                    //echo $_FILES['image']['tmp_name'];
                     if($single > 0 || $double > 0){
 
                         $selectquery ="SELECT roomName from room_details where roomName ='$roomname'";
@@ -25,32 +32,32 @@
                         
                         if(empty($row)){
 
-                            if($single > 0){
-                              while($single > 0){
-                                  $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, noOfperson, status) VALUES ('$roomname','$roomtype','1','$persons','$status')";
-                                  $insertquery = mysqli_query($conn, $query);
+                          $imgData =addslashes(file_get_contents($_FILES['image']['tmp_name']));
+                          $imageProperties = getimageSize($_FILES['image']['tmp_name']);
 
-                                  $single--;
-                              }
+                            if($single > 0){
+
+                                $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','1','$single','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
+                               $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
+
                             }
                             if($double > 0){
-                                while($double > 0){
-                                    $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, noOfperson, status) VALUES ('$roomname','$roomtype','2','$persons','$status')";
-                                    $insertquery = mysqli_query($conn, $query);
-
-                                    $double--;
-                                }
+                               $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','2','$double','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
+                               $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
                             }
-                            header("Location: admindashboard.php");
+                            header("Location: admindashboard-roomdetails.php");
 
                         }else{
-                          header("Location: admindashboard.php?page=addroom&msg=existing");
+                          header("Location: admindashboard-roomdetails.php?page=addroom&msg=existing");
                         }
 
                     }else{
-                        header("Location: admindashboard.php?page=addroom&msg=invalidnum");
+                        header("Location: admindashboard-roomdetails.php?page=addroom&msg=invalidnum");
                     }
-                    
+
+                }else{
+                  header("Location: admindashboard-roomdetails.php?page=addroom&msg=noimg");
+                } 
             break;
 
             case "update":
@@ -61,54 +68,72 @@
                     $single = $_POST['singleBed'];
                     $double = $_POST['doubleBed'];
                     $persons  = $_POST['numPersons'];
+                    $roomprice  = $_POST['roomPrice'];
+                    $addpersonprice  = $_POST['addPersonPrice'];
                     $status = $_POST['roomStatus'];
+                    $roomnameDB;
                     
                     $roomname = strtoupper($roomname); //Set room name to always be capital letters
-
+                 
                     if($single > 0 || $double > 0){ //Catch invalid num count of beds
 
                         //Get room name for update
-                        $query = "SELECT roomName from room_details WHERE roomID = '$roomId'";
-
-                            $res = mysqli_query($conn, $query);
+                      $query = "SELECT roomName from room_details WHERE roomID = '$roomId'";
+                            $res = mysqli_query($conn, $query) or die(mysqli_error($conn));
                             $row = mysqli_fetch_assoc($res);
                             $roomnameDB = $row['roomName'];
-                            echo $roomnameDB."</br>";
 
-                        //Get room ids for deletion
-                        $query = "SELECT roomID from room_details WHERE roomName = '$roomnameDB'";
-                            $res = mysqli_query($conn, $query);
+                      $query = "SELECT bedID from room_details WHERE roomName = '$roomnameDB'";
+                      $res = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
                               while($row = mysqli_fetch_assoc($res)){
-                                echo $row['roomID']."</br>";
-                                $id = $row['roomID'];
-                                $query ="DELETE from room_details WHERE roomID = '$id'";
-                                mysqli_query($conn, $query);
-                              }
+                                $bedId = $row['bedID'];
 
-                          //Inserting new updated data of rooms
-                            if($single > 0){
-                              while($single > 0){
-                                  $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, noOfperson, status) VALUES ('$roomname','$roomtype','1','$persons','$status')";
-                                  $insertquery = mysqli_query($conn, $query);
-
-                                  $single--;
-                              }
-                            }
-                            if($double > 0){
-                                while($double > 0){
-                                    $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, noOfperson, status) VALUES ('$roomname','$roomtype','2','$persons','$status')";
-                                    $insertquery = mysqli_query($conn, $query);
-
-                                    $double--;
+                                if($bedId=='1'){
+                                    $updatequery = "UPDATE `room_details` SET `bedCount`='$single' WHERE roomName = '$roomnameDB' AND bedID = '$bedId'";
+                                    mysqli_query($conn, $updatequery) or die(mysqli_error($conn));
+                                }else{
+                                    $updatequery = "UPDATE `room_details` SET `bedCount`='$double' WHERE roomName = '$roomnameDB' AND bedID = '$bedId'";
+                                    mysqli_query($conn, $updatequery) or die(mysqli_error($conn));
                                 }
-                            }
-                            header("Location: admindashboard.php");
-                    
+
+                              }
+
+                      //check if there is new image to be inserted
+                      if(is_uploaded_file($_FILES['edit-image']['tmp_name'])){
+
+                         $imageData = addslashes(file_get_contents($_FILES['edit-image']['tmp_name']));
+                         $imageMime = getimageSize($_FILES['edit-image']['tmp_name']);
+                         $imageType = $imageMime['mime'];
+
+                         $updatequery = "UPDATE `room_details` SET `roomName`='$roomname',`roomTypeId`='$roomtype',`noOfperson`='$persons',`roomPrice`='$roomprice',`addPersonPrice`='$addpersonprice',`imgType`='$imageType',`imgData`='$imageData',`status`='$status' WHERE roomName='$roomnameDB'";
+
+                           mysqli_query($conn, $updatequery) or die(mysqli_error($conn));
+
+                      }else{
+
+                        $updatequery = "UPDATE `room_details` SET `roomName`='$roomname',`roomTypeId`='$roomtype',`noOfperson`='$persons',`roomPrice`='$roomprice',`addPersonPrice`='$addpersonprice',`status`='$status' WHERE roomName='$roomnameDB'";
+
+                          mysqli_query($conn, $updatequery) or die(mysqli_error($conn));
+                      }
+
+                      header("Location: admindashboard-roomdetails.php");
                     }else{
-                        header("Location: admindashboard.php?page=editroom&msg=invalidnum");
+                        header("Location: admindashboard-roomdetails.php?page=editroom&msg=invalidnum");
                     }
+
             break;
+
+            case 'updatestat':
+
+                  $custId = $_POST['custId'];
+                  $custStatus = $_POST['custStatus'];
+
+                   $updatequery = "UPDATE `customer` SET `status`='$custStatus' WHERE customerID = '$custId'";
+                   mysqli_query($conn, $updatequery) or die(mysqli_error($conn));
+
+                   header("Location: dashboard-users.php");
         }
     }
+
 ?>
