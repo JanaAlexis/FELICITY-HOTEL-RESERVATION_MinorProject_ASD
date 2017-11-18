@@ -2,7 +2,7 @@
 	include_once("config/config.php");
 
 	/*
-	if(!(isset($_SESSION['userId']))){
+	if(!(isset($_SESSION['userStatus']))){
 		session_destroy();
 		header("Location: ../");
 	}
@@ -21,12 +21,9 @@
 	
 			<!-- Bootstrap Core CSS -->
 			<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-			<!--
-			<link href="css/dataTables.bootstrap.min.css" rel="stylesheet"/>
-			<link href="../css/dataTables.bootstrap-theme.min.css" rel="stylesheet"/>
-			<!-- Custom Fonts
-			-->
+
 			<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+			
 			<!-- Admin CSS -->
 			<link href="css/main.css" rel="stylesheet" type="text/css"/>
 			

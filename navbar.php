@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default nav-container">
+<nav class="navbar navbar-inverse nav-container">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".main-nav">
@@ -14,18 +14,18 @@
                 <a href="../felicity/"> Home </a>
             </li>
             <li>
-                <a href="../felicity/"> About </a>
+                <a href="index.php#about-us"> About </a>
             </li>
             <li class="dropdown">
-                <a href="rooms.php" class="dropdown-toggle" data-toggle="dropdown"> Rooms <i class="caret"></i></a>
+                <a href="" class="dropdown-toggle" data-toggle="dropdown"> Rooms <i class="caret"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="">Deluxe</a></li>
+                        <li><a href="rooms.php">Deluxe</a></li>
                         <li class="divider"></li>
-                        <li><a href="">Luxury</a></li>
+                        <li><a href="rooms.php">Luxury</a></li>
                         <li class="divider"></li>
-                        <li><a href="">Suite</a></li>
+                        <li><a href="rooms.php">Suite</a></li>
                         <li class="divider"></li>
-                        <li><a href="">Superior</a></li>
+                        <li><a href="rooms.php">Superior</a></li>
                     </ul>
             </li>
         </ul>
