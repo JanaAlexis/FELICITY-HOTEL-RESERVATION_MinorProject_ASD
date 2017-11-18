@@ -4,273 +4,31 @@
     //echo $_SESSION['userStatus'];
 ?>
 
+
 <div class="container-fluid container-padding">
-    <button class="btn btn-secondary" data-toggle="modal" data-target="#newroom-modal">Add New Room Record</button>
-    
-<!-- Add new room modal -->
-<div id="newroom-modal" class="modal fade in" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
+	<div class="row">
+		
+		<div id="clouds">
+		<div class="cloud x1"></div>
+			<!-- Time for multiple clouds to dance around -->
+		<div class="cloud x2"></div>
+		<section class="section" height: "250px" width:"100%" align="center">
+			<a href="dashboard-users.php"><i class="fa fa-user-circle-o"><h1>USERS DETAILS</h1></i></a>
+		</section>
+		<div class="cloud x3"></div>
+		<div class="cloud x4"></div>
+		<section class="section" height:"250px" width:"100%" align="center">
+			<i class="fa fa-user-circle-o"><a href="admindashboard-roomdetails.php"><h1>ADMIN DASHBOARD</h1></a>
+		</section>
+		<div class="cloud x5"></div>
 
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">Add New Room Record </h4>
-          </div>
 
-          <div class="modal-body">
-              <!-- Label shows if some data entered is invalid -->
-                  <label class="label label-danger" id="datainvalid"></label></br>
-                  
-            <form method="post" action="admin-functions.php?action=add">
-                <div class="form-group">    
-                    <label>Room Type</label>
-                    <div class="dropdown">
-                        <select class= "btn btn-sm btn-info" name="roomType" id="roomType">
-                            <option value="1">Deluxe</option>
-                            <option value="2">Luxury</option>
-                            <option value="3">Suite</option>
-                            <option value="4">Superior</option>
-                        </select>
-                    </div>
-                    <label>Room Name</label>
-                    <input type="text" id="" class="form-control" placeholder="Room name" name="roomName" required /></br>
-                    <label>Bed Type</label></br>
-                    <label style="font-size: 13px;">Single</label>
-                    <input type="number" id="" class="form-control" min="0" value="0" name="singleBed"/>
-                    <label style="font-size: 13px;">Double</label>
-                    <input type="number" id="" class="form-control" min="0" value="0" name="doubleBed"/></br>
-                    
-                    <label>No. of Persons</label>
-                    <input type="number" id="" class="form-control" min="1" value="1" name="numPersons"/></br>
-                    
-                    <label>Status</label>
-                    <div class="dropdown">
-                        <select class= "btn btn-sm btn-info" name="roomStatus" id="roomStatus" required>
-                            <option value="Available">Available</option>
-                            <option value="Unavailable">Unavailable</option>
-                        </select>
-                    </div></br></br>
-                    
-                    <button class="btn btn-info pull-right" type="submit" name="submit"> Submit Record </button>
-                </div>
-            </form>
-          </div>
-      </div>
-  </div>
-</div>                      
-<!-- end of add new room modal -->
 
-<!-- Table that displays the record list -->
-<h2>Room Record</h2>
-<div class="panel panel-default">
-  <div class="panel-heading"></div>
-  <div class="panel-body">
-      <table class="table table-hover" id="item-list-tbl">
-        <thead>
-           <tr>
-              <!-- <th class='thId'>Room Id</th> -->
-              <th>Room Name</th>
-              <th>Room Type</th>
-              <th>Bed Type</th>
-              <th>No. of Bed/s</th>
-              <th>No. of Person/s</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="item-tbl-body">
-            <!-- to be filled dynamically -->
-          </tbody>
-      </table>
-  </div>
+		</div>
+		
+	</div>
 </div>
-<!-- end of display list -->
-
-<!-- Edit room data modal -->
-<div id="editroom-modal" class="modal fade in" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">Update Room Record </h4>
-          </div>
-          <div class="modal-body">
-              <!-- Label shows if some data entered is invalid -->
-                  <label class="label label-danger" id="updateDatainvalid"></label></br>
-                  
-            <form method="post" action="admin-functions.php?action=update">
-                <div class="form-group">
-                    <input type="hidden" id="edit-roomId" class="form-control" name="roomId"/>
-
-                    <label>Room Type</label>
-                    <div class="dropdown">
-                        <select class= "btn btn-sm btn-success" name="roomType" id="edit-roomType">
-                            <option value="1">Deluxe</option>
-                            <option value="2">Luxury</option>
-                            <option value="3">Suite</option>
-                            <option value="4">Superior</option>
-                        </select>
-                    </div>
-                    <label>Room Name</label>
-                    <input type="text" id="edit-roomName" class="form-control" placeholder="Room name" name="roomName" required /></br>
-                    <label>Bed Type</label></br>
-                    <label id="edit-single-lbl" style="font-size: 13px;">Single</label>
-                    <input type="number" id="edit-single" class="form-control" min="0" value="0" name="singleBed"/>
-                    <label id="edit-double-lbl" style="font-size: 13px;">Double</label>
-                    <input type="number" id="edit-double" class="form-control" min="0" value="0" name="doubleBed"/></br>
-                    
-                    <label>No. of Persons</label>
-                    <input type="number" id="edit-numPerson" class="form-control" min="1" value="1" name="numPersons"/></br>
-                    
-                    <label>Status</label>
-                    <div class="dropdown">
-                        <select class= "btn btn-sm btn-success" name="roomStatus" id="edit-roomStatus" required>
-                            <option value="Available">Available</option>
-                            <option value="Unavailable">Unavailable</option>
-                            <option value="Removed">Removed</option>
-
-                        </select>
-                    </div></br></br>
-                    
-                    <button class="btn btn-success pull-right" type="submit" name="submit"> Update Record </button>
-                </div>
-            </form>
-          </div>
-      </div>
-  </div>
-</div>                      
-<!-- end of edit room data modal -->
-
 
 <?php
-    include_once 'footer.php';
+    include 'footer.php';
 ?>
-
-<?php   //Displays message when data in adding new room is invalid
-if (isset($_GET['page'])){ 
-
-    if($_GET['page']=="addroom"){               
-        if(!empty($_GET['msg'])){
-
-            switch ($_GET['msg']) {
-              case 'invalidnum':
-?>
-                   <script>
-                  $('#datainvalid').text('Number count is invalid. Please try again.');
-                  $('#newroom-modal').modal('show');
-                  </script>
-<?php
-              break;
-              case 'existing':
-?>
-                  <script>
-                  $('#datainvalid').text('Room name already exist. Please try again.');
-                  $('#newroom-modal').modal('show');
-                  </script>
-<?php
-                        break;
-            }
-        }
-    }
-    if($_GET['page']=="editroom"){               
-        if(!empty($_GET['msg'])){
-
-            switch ($_GET['msg']) {
-              case 'invalidnum':
-?>
-                  <script>
-                    alert("Number count is invalid. Please try again.");
-                    window.location.replace("admindashboard.php");
-                  </script>
-<?php
-              break;
-            }
-        }
-    }
-}
-?> <!-- end of display message  -->
-
-<?php //PHP query for getting record list
-
-  $selectquery = "SELECT roomID, roomName, r.roomType, b.bedType, count(rd.bedID) as bedNum, noOfperson, status as roomStatus from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID Group by rd.roomName, rd.bedID";
-  $res = mysqli_query($conn, $selectquery);
-  $data;
-  if($res){
-    $x=0;
-      while($result = mysqli_fetch_assoc($res)){
-        $data[$x] = $result;
-        $x++;
-      }
-  }
-
-?> <!-- end of record list php -->
-
-
-<script type="text/javascript"> //Javascript/jquery when opening document
-  $(document).ready(function(){
-
-    //$('.thId').hide();
-
-    var data = <?php echo json_encode($data) ?>; // Populate record data in table using the data from php query
-    
-    var itemTbl = $("#item-tbl-body");
-    itemTbl.html("");
-    var roomId = 0;
-
-       for(var x=0;x<data.length;x++){
-         
-         //console.log(data[x]);
-       
-         roomId = data[x].roomID;
-         var tRow = "<tr>";
-         tRow += "<td>" + data[x].roomName + "</td>";
-         tRow += "<td>" + data[x].roomType + "</td>";
-         tRow += "<td>" + data[x].bedType + "</td>";
-         tRow += "<td>" + data[x].bedNum + "</td>";
-         tRow += "<td>" + data[x].noOfperson + "</td>";
-         tRow += "<td>" + data[x].roomStatus + "</td>";
-         tRow += "<td><div class='actions-menu'><button type='button' class='btn btn-sm btn-default editRecordLink' data-roomName='"+data[x].roomName+"' data-roomType='"+data[x].roomType+"' data-bedType='"+data[x].bedType+"' data-bedNum='"+data[x].bedNum+"' data-numPerson='"+data[x].noOfperson+"' data-roomStatus='"+data[x].roomStatus+"' data-toggle='modal' data-target='#editroom-modal' id='"+roomId+"'><i class='fa fa-edit' style='color:green;'></i></button></div></td>";
-         tRow += "</tr>";
-
-       itemTbl.append(tRow);
-      }   // end of populating data
-
-      $(".editRecordLink").on({
-          click: editRecord
-      })
-
-
-      function editRecord(){
-            var roomId = $(this).attr("id");
-            var roomname = $(this).attr("data-roomName");
-            var roomtype = $(this).attr("data-roomType");
-            var bedtype = $(this).attr("data-bedType");
-            var bednum = $(this).attr("data-bedNum");
-            var numperson = $(this).attr("data-numPerson");
-            var roomstatus = $(this).attr("data-roomStatus");
-            $('#edit-roomId').val(roomId);
-            $('#edit-roomName').val(roomname);
-
-
-            if(roomtype=='Deluxe'){
-                $('#edit-roomType').val('1');
-            }else if(roomtype=='Luxury'){
-                $('#edit-roomType').val('2');
-            }else if(roomtype=='Suite'){
-                $('#edit-roomType').val('3');
-            }else{
-                $('#edit-roomType').val('4');
-            }
-            $('#edit-bedType').val(bedtype);
-            if(bedtype=='Single'){
-                $('#edit-single').val(bednum);
-            }else{
-                $('#edit-double').val(bednum);
-            }
-            $('#edit-numPerson').val(numperson);
-            $('#edit-roomStatus').val(roomstatus);
-
-      }
-  });
-
-</script>
