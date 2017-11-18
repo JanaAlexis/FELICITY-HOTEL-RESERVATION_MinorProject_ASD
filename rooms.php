@@ -3,31 +3,116 @@
 	include 'navbar.php';
 	//echo $_SESSION['userStatus'];
 ?>
+ 
 
-<div class="container" style="width:100%;">  
-   <h1 align="center"></h1><br>
-   <div class="deluxe col-md-12">
-			<h3 align="center">Deluxe Rooms</h3>
+<div class="container-fluid">
+   <div class="col-md-12">
+			<h3 id="roomtype1" align="left">Deluxe Rooms</h3>
 <?php
-				$query = "SELECT imgData, r.roomType from room_details rd join room r on rd.roomTypeId = r.roomTypeId WHERE r.roomType = 'deluxe' Group by rd.roomName;";
+				$query = "SELECT roomID from room_details WHERE roomTypeId = '1' Group by roomName";
 				$result = mysqli_query($conn, $query);  
-				
 				if(mysqli_num_rows($result) > 0){  
 					while($row = mysqli_fetch_array($result)){
+						$roomId = $row['roomID'];
 ?>
-            <div class="col-md-4">  
-                <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="left">  
-                    <img src="images/rooms/Deluxe.jpg" class="img-responsive" /><br />
+            <div class="col-md-3 img-grid">  
+                <div style="border:1px solid #333; background-color:#f1f1f1;" align="left">  
+                    <img src="showimage.php?msg=<?php echo $roomId ?>" class="img-responsive" /><br />
                 </div>
                 <div align="right">
-                	  <a href="roomdetails.php"><input type="submit" name="rd" style="margin-top:5px;" class="btn btn-success" value="Show Details" /></a>   	
+                	  <a href="roomdetails.php"><input type="submit" name="rd" style="margin-top:5px; border-radius: 15px 0 15px 0; background-color: black; color: yellow;" class="btn btn-success" value="Show Details" /></a>   	
                 </div>    
             </div>
 <?php  
 	    	 }//end of while loop 
+       }else{
+?>
+       	<script>$('#roomtype1').hide();</script>
+<?php
        }
 ?>
-	</div>
+
+	</div><!-- end deluxe -->
+	<div class="col-md-12">
+			<h3 id="roomtype2" align="left">Luxury Rooms</h3>
+<?php
+				$query = "SELECT roomID from room_details WHERE roomTypeId = '2' Group by roomName";
+				$result = mysqli_query($conn, $query);  
+				if(mysqli_num_rows($result) > 0){  
+					while($row = mysqli_fetch_array($result)){
+						$roomId = $row['roomID'];
+?>
+            <div class="col-md-3 img-grid">  
+                <div style="border:1px solid #333; background-color:#f1f1f1;" align="left">  
+                    <img src="showimage.php?msg=<?php echo $roomId ?>" class="img-responsive" /><br />
+                </div>
+                <div align="right">
+                	  <a href="roomdetails.php"><input type="submit" name="rd" style="margin-top:5px; border-radius: 15px 0 15px 0; background-color: black; color: yellow;" class="btn btn-success" value="Show Details" /></a>   	
+                </div>    
+            </div>
+<?php  
+		    	}//end of while loop 
+		    }else{
+?>
+       	<script>$('#roomtype2').hide();</script>
+<?php
+       }
+?>
+	</div><!-- end luxury -->
+	<div class="col-md-12">
+			<h3  id="roomtype3" align="left">Suite Rooms</h3>
+<?php
+				$query = "SELECT roomID from room_details WHERE roomTypeId = '3' Group by roomName";
+				$result = mysqli_query($conn, $query);  
+				if(mysqli_num_rows($result) > 0){  
+					while($row = mysqli_fetch_array($result)){
+						$roomId = $row['roomID'];
+?>
+            <div class="col-md-3 img-grid">  
+                <div style="border:1px solid #333; background-color:#f1f1f1;" align="left">  
+                    <img src="showimage.php?msg=<?php echo $roomId ?>" class="img-responsive" /><br />
+                </div>
+                <div align="right">
+                	  <a href="roomdetails.php"><input type="submit" name="rd" style="margin-top:5px; border-radius: 15px 0 15px 0; background-color: black; color: yellow;" class="btn btn-success" value="Show Details" /></a>   	
+                </div>    
+            </div>
+<?php  
+		    	}//end of while loop 
+		    }else{
+?>
+       	<script>$('#roomtype3').hide();</script>
+<?php
+       }
+?>
+	</div><!-- end suite -->
+	<div class="col-md-12">
+			<h3 id="roomtype4" align="left">Superior Rooms</h3>
+<?php
+				$query = "SELECT roomID from room_details WHERE roomTypeId = '4' Group by roomName";
+				$result = mysqli_query($conn, $query);  
+				if(mysqli_num_rows($result) > 0){  
+					while($row = mysqli_fetch_array($result)){
+						$roomId = $row['roomID'];
+?>
+            <div class="col-md-3 img-grid">  
+                <div style="border:1px solid #333; background-color:#f1f1f1;" align="left">  
+                    <img src="showimage.php?msg=<?php echo $roomId ?>" class="img-responsive" /><br />
+                </div>
+                <div align="right">
+                	  <a href="roomdetails.php"><input type="submit" name="rd" style="margin-top:5px; border-radius: 15px 0 15px 0; background-color: black; color: yellow;" class="btn btn-success" value="Show Details" /></a>   	
+                </div>    
+            </div>
+<?php  
+		    	}//end of while loop 
+		    }else{
+?>
+       	<script>$('#roomtype4').hide();</script>
+<?php
+       }
+?>
+		</div><!-- end luxury-->
+
+
 </div>
 
 <?php
