@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<!-- Table that displays the record list -->
-			<h3>Room Details</h3>
+			<h3>Customer Details</h3>
 			<div class="panel panel-default">
 			  <div class="panel-heading"></div>
 			  <div class="panel-body">

@@ -1,304 +1,158 @@
-  <?php    
- include ('config/config.php');
- if(isset($_POST["reserve"])){  
-      if(isset($_SESSION["cart"])){  
-           $item_array_id = array_column($_SESSION["shopping_cart"], "item_id");  
-           if(!in_array($_GET["id"], $item_array_id)){  
-                $count = count($_SESSION["cart"]);  
-                $item_array = array(  
-                     'item_id'               =>     $_GET["id"],  
-                     'item_name'               =>   $_POST["hidden_roomName"],  
-                   	 'item_roomType'               =>   $_POST["hidden_roomType"],  
-                     'item_bedType'          =>     $_POST["hidden_bedType"],
-                     'item_bedType'               =>   $_POST["hidden_bedType"],  
-                     'item_noOfperson'          =>     $_POST["hidden_noOfperson"],
-                     'item_roomPrice'          =>     $_POST["hidden_roomPrice"],  
-                );  
-                $_SESSION["cart"][$count] = $item_array;  
-           }  
-           else{  
-                echo '<script>alert("Item Already Added")</script>';  
-                echo '<script>window.location="mytest.php"</script>';  
-           }  
-      }  
-      else{  
-           $item_array = array(  
-                 'item_id'               =>     $_GET["id"],  
-                     'item_name'               =>   $_POST["hidden_roomName"],  
-                   	 'item_roomType'               =>   $_POST["hidden_roomType"],  
-                     'item_bedType'          =>     $_POST["hidden_bedType"],
-                     'item_bedType'               =>   $_POST["hidden_bedType"],  
-                     'item_noOfperson'          =>     $_POST["hidden_noOfperson"],
-                     'item_roomPrice'          =>     $_POST["hidden_roomPrice"],   
-           );  
-           $_SESSION["cart"][0] = $item_array;  
-      }  
- } 
+ <?php
+  include ('config/config.php');
+  include 'header.php';
+  include 'navbar.php';
 
+ ?>
+<div class="container-fluid">
 
+    <h1 align="center" style="letter-spacing: 15px;">ROOM LIST</h1><br>
 
- if(isset($_GET["action"])){  
-      if($_GET["action"] == "delete"){  
-           foreach($_SESSION["cart"] as $keys => $values){  
-                if($values["item_id"] == $_GET["id"]){  
-                     unset($_SESSION["cart"][$keys]);  
-                     echo '<script>alert("Item Removed")</script>';  
-                     echo '<script>window.location="mytest.php"</script>';  
-                }  
-           }  
-      }  
- }  
- ?>  
-
+    <div class="col-md-12">
 <?php
-	include 'header.php';
-	include 'navbar.php';
+      $typeCount = 1;
+      while($typeCount<5){
+          $query = "SELECT roomID, roomName, r.roomType, rd.bedID, b.bedType, bedCount, noOfperson, roomPrice, addPersonPrice from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID WHERE r.roomTypeId='$typeCount' AND status = 'Available' Group by rd.roomName, rd.bedID";
+            $result = mysqli_query($conn, $query); 
+
+            $row1 = mysqli_fetch_array($result);
+
+         
+
+           //$rowCount = mysqli_num_rows($result);
+           if(mysqli_num_rows($result) > 0){  
+            $data = [];
+            $x = 0;
+              while($row = mysqli_fetch_array($result)){  //fetch all rows at once
+                $data[$x] = $row;
+                $x++;
+              }
+            $x = 0;
+            $y = count($data);
+            $z = $y - 1;
+            while($x < $y){
+?>
+                <div class="col-md-3 img-grid">  
+                    
+        					<div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px; margin:30px;" align="left">  
+        						<img src="showimage.php?msg=<?php echo $data[$x]['roomID'] ?>" class="img-responsive" /><br />
+        						<div align="left">
+        							<div align="center"><h4><?php echo strtoupper($data[$x]['roomType']) ?></h4>
+        							</div></br>
+        							<label class="lbl-roomdetails">Single bed/s : </label>
+        							<label class="lbl-roomdetails"><?php echo $data[$x]['bedCount'] ?></label></br>
+        							<label class="lbl-roomdetails">Double bed/s : </label>
+<?php 
+        					if($x!=$z){
 
 ?>
-           <div class="container" style="width:100%;">  
-                <h1 align="center">List of Rooms</h1><br>
-                <div class="deluxe col-md-12">
+        							<label class="lbl-roomdetails"><?php echo $data[$x+1]['bedCount'] ?></label></br>
+<?php
+        					}else{
+?>
+        							<label class="lbl-roomdetails" align="left"><?php echo $data[$x]['bedCount'] ?></label></br>
+<?php
+        					}
+?>
+        							<label class="lbl-roomdetails">Pax : </label>
+        							<label class="lbl-roomdetails"><?php echo $data[$x]['noOfperson'] ?></label></br>
+        							<label class="lbl-roomdetails">Extra Person Rate : </label>
+        							<label class="lbl-roomdetails"> Php <?php echo $data[$x]['addPersonPrice'] ?></label></br>
+        							<label class="lbl-roomdetails">Rate : </label>
+        							<label class="lbl-roomdetails"> Php <?php echo $data[$x]['roomPrice'] ?></label></br>
+        						</div>
 
-                <h3 align="center">Deluxe Rooms</h3>
-                <?php
-               	$query = "SELECT roomID,roomName, image, roomPrice, addPersonPrice, r.roomType, b.bedType, count(rd.bedID) as bedNum, noOfperson, status as roomStatus from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID WHERE r.roomType = 'deluxe' Group by rd.roomName, rd.bedID";
-                $result = mysqli_query($conn, $query);  
+        						<div align="right">
+        						   <input data-id="<?php echo $data[$x]['roomName'] ?>" type="button" name="reserve" align="center" style="margin-top:5px; border-radius: 15px 0 15px 0; background-color: black; color: yellow; width: 50%;" class="btn btn-success btnReserve" value="Reserve" />     
+        						</div>  
+        					</div>
+                     
+        				</div>
+<?php
+                        $x =$x + 2;
+                      }
+                    }
+                $typeCount++;
+              }
 
-                if(mysqli_num_rows($result) > 0){  
-                     while($row = mysqli_fetch_array($result)){  
-                ?>  
-                <?php
-                if($row['roomStatus']=='Available'){
-                ?>
-  				<div class="col-md-4">  
-                    <form method="post" action="mytest.php?action=add&id=<?php echo $row["roomID"]; ?>">  
-                          <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="left">  
-                               <img src="images/rooms/Deluxe.jpg" class="img-responsive" /><br />
-                             
-                               <h4>Room Type: <?php echo $row["roomType"]; ?></h4>
-							   <h4>Number of beds: <?php echo $row["bedNum"]; ?></h4>
-                               <h4>Single: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Double: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Maximum no of person: <?php echo $row["noOfperson"]; ?></h4>  
-                               <h4>Rate: Php <?php echo $row["roomPrice"]; ?></h4>  
+?>
+    </div> <!-- End col-lg-12 -->
 
-                               <input type="hidden" name="hidden_roomName" value="<?php echo $row["roomName"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomType" value="<?php echo $row["roomType"]; ?>" />  
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" /> 
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" />  
-                               <input type="hidden" name="hidden_noOfperson" value="<?php echo $row["noOfperson"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomPrice" value="<?php echo $row["roomPrice"]; ?>" />
-                              
-                               <div align="right">
-                            	<input type="submit" name="reserve" style="margin-top:5px;" class="btn btn-success" value="Reserve" />   	
-                               </div>  
-                              
-                          </div>  
-                     </form>  
-                </div>  
-				<?php
-            	}//end of if status
-                ?>
-              
-                <?php  
-                }//end of while loop  
-                }else{
-              	?>
-					<h5 align='center'><?php echo "No Rooms Available."?></h5>
-                <?php
-                }
-                ?>
-                </div><!--end of deluxe-->
-			
-                <div class="luxury  col-md-12">
-                <h3 align="center">Luxury Rooms</h3>
-                <?php  
-               	$query = "SELECT roomID,roomName, image, roomPrice, addPersonPrice, r.roomType, b.bedType, count(rd.bedID) as bedNum, noOfperson, status as roomStatus from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID WHERE r.roomType = 'luxury' Group by rd.roomName, rd.bedID";
-                $result = mysqli_query($conn, $query);  
 
-                if(mysqli_num_rows($result) > 0){  
-                     while($row = mysqli_fetch_array($result)){  
-                ?>  
- 				<?php
-                if($row['roomStatus']=='Available'){
-                ?>
-  				<div class="col-md-4">  
-                    <form method="post" action="mytest.php?action=add&id=<?php echo $row["roomID"]; ?>">  
-                          <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="left">  
-                               <img src="images/rooms/Luxury.jpg" class="img-responsive" /><br />
-                               <h4>Room Type: <?php echo $row["roomType"]; ?></h4>
-							   <h4>Number of beds: <?php echo $row["bedNum"]; ?></h4>
-                               <h4>Single: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Double: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Maximum no of person: <?php echo $row["noOfperson"]; ?></h4>  
-                               <h4>Rate: Php <?php echo $row["roomPrice"]; ?></h4>    
 
-                               <input type="hidden" name="hidden_roomName" value="<?php echo $row["roomName"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomType" value="<?php echo $row["roomType"]; ?>" />  
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" /> 
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" />  
-                               <input type="hidden" name="hidden_noOfperson" value="<?php echo $row["noOfperson"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomPrice" value="<?php echo $row["roomPrice"]; ?>" />  
-                               <div align="right">
-                            	<input type="submit" name="reserve" style="margin-top:5px;" class="btn btn-success" value="Reserve" />   	
-                               </div>    
-                          </div>  
-                     </form>  
-                </div>  
-				<?php
-            	}//end of if status
-                ?>
-                <?php  
-                     }//end of while loop  
-                }else{
-                ?>
-					<h5 align='center'><?php echo "No Rooms Available."?></h5>
-                <?php
-                }
-                ?>
-                </div><!--end of luxury-->
 
-                <div class="superior  col-md-12">
-                <h3 align="center">Superior Rooms</h3>
-                <?php  
-               	$query = "SELECT roomID,roomName, image, roomPrice, addPersonPrice, r.roomType, b.bedType, count(rd.bedID) as bedNum, noOfperson, status as roomStatus from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID WHERE r.roomType = 'superior' Group by rd.roomName, rd.bedID";
-                $result = mysqli_query($conn, $query);  
+    <button id="btnBook" class="btn btn-primary fixed-btn" style="margin: 25px; padding:10px; align: center;">Complete Reservation >>> </button>
+</div> <!-- End container-fluid -->
 
-                if(mysqli_num_rows($result) > 0){  
-                     while($row = mysqli_fetch_array($result)){  
-                ?>  
- 				<?php
-                if($row['roomStatus']=='Available'){
-                ?>
-  				<div class="col-md-4">  
-                    <form method="post" action="mytest.php?action=add&id=<?php echo $row["roomID"]; ?>">  
-                          <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="left">  
-                               <img src="images/rooms/Superior.jpg" class="img-responsive" /><br /><h4 class="text-danger">Room Type: <?php echo $row["roomType"]; ?></h4>
-							   <h4>Room Type: <?php echo $row["roomType"]; ?></h4>
-							   <h4>Number of beds: <?php echo $row["bedNum"]; ?></h4>
-                               <h4>Single: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Double: <?php echo $row["bedType"]; ?></h4>
-                               <h4>Maximum no of person: <?php echo $row["noOfperson"]; ?></h4>  
-                               <h4>Rate: Php <?php echo $row["roomPrice"]; ?></h4>  
 
-                               <input type="hidden" name="hidden_roomName" value="<?php echo $row["roomName"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomType" value="<?php echo $row["roomType"]; ?>" />  
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" /> 
-                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" />  
-                               <input type="hidden" name="hidden_noOfperson" value="<?php echo $row["noOfperson"]; ?>" /> 
-                               <input type="hidden" name="hidden_roomPrice" value="<?php echo $row["roomPrice"]; ?>" />  
-                               <div align="right">
-                            	<input type="submit" name="reserve" style="margin-top:5px;" class="btn btn-success" value="Reserve" />   	
-                               </div>    
-                          </div>  
-                     </form>  
-                </div>  
-				<?php
-         		}//end of if status
-                ?>
-                <?php  
-                     }//end of while loop  
-                }else{
-                ?>
-					<h5 align='center'><?php echo "No Rooms Available."?></h5>
-                <?php
-                }
-                ?>
-                </div><!--end of superior-->
+<?php
+    include 'footer.php';
+?>
 
-                <div class="suite  col-md-12">
-                <h3 align="center">Suite Rooms</h3>
-                <?php  
-               	$query = "SELECT roomID,roomName, image, roomPrice, addPersonPrice, r.roomType, b.bedType, count(rd.bedID) as bedNum, noOfperson, status as roomStatus from room_details rd join room r on rd.roomTypeId = r.roomTypeId join beds b on rd.bedID = b.bedID WHERE r.roomType = 'suite' Group by rd.roomName, rd.bedID";
-                $result = mysqli_query($conn, $query);  
+  <script type="text/javascript"> //Javascript/jquery when opening document
+  $(document).ready(function(){
 
-                if(mysqli_num_rows($result) > 0){  
-                     while($row = mysqli_fetch_array($result)){  
-                ?>  
-				<?php
-                if($row['roomStatus']=='Available'){
-                ?>
-  				<div class="col-md-4">  
-                    <form method="post" action="mytest.php?action=add&id=<?php echo $row["roomID"]; ?>">  
-                          <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="left">  
-                               <img src="images/rooms/Suite.jpg" class="img-responsive" /><br />
-                               <div align="left">
-                               	  <h4>Room Type: <?php echo $row["roomType"]; ?></h4>
-								  <h4>Number of beds: <?php echo $row["bedNum"]; ?></h4>
-	                              <h4>Single: <?php echo $row["bedType"]; ?></h4>
-	                              <h4>Double: <?php echo $row["bedType"]; ?></h4>
-	                              <h4>Maximum no of person: <?php echo $row["noOfperson"]; ?></h4>  
-	                              <h4>Rate: Php <?php echo $row["roomPrice"]; ?></h4>  
+      var arrId = [];
 
-	                               <input type="hidden" name="hidden_roomName" value="<?php echo $row["roomName"]; ?>" /> 
-	                               <input type="hidden" name="hidden_roomType" value="<?php echo $row["roomType"]; ?>" />  
-	                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" /> 
-	                               <input type="hidden" name="hidden_bedType" value="<?php echo $row["bedType"]; ?>" />  
-	                               <input type="hidden" name="hidden_noOfperson" value="<?php echo $row["noOfperson"]; ?>" /> 
-	                               <input type="hidden" name="hidden_roomPrice" value="<?php echo $row["roomPrice"]; ?>" />  
-                               </div>
-                              
-                               <div align="right">
-                            	<input type="submit" name="reserve" style="margin-top:5px;" class="btn btn-success" value="Reserve" />   	
-                               </div>   
-                          </div>  
-                     </form>  
-                </div>  
-				<?php
-         		}//end of if status
-                ?>
-                <?php  
-                     }//end of while loop  
-                }else{
-                ?>
-					<h5 align='center'><?php echo "No Rooms Available."?></h5>
-                <?php
-                }
-                ?>
-                </div><!--end of sute-->
-                  
-                <div style="clear:both"></div>  
-                <br />  
-                <h3>Booked details</h3>  
-                <div class="table-responsive">  
-                     <table class="table table-bordered">  
-                          <tr>  
-                               <th>Room Type</th>
-                               <th>Bed Type</th>
-                               <th>Maximum number of person</th>
-                               <th>Price</th>  
-           					   <th>Action</th>  
-                          </tr>  
-                          <?php   
-                          if(!empty($_SESSION["cart"]))  
-                          {  
-                               $total = 0;  
-                               foreach($_SESSION["cart"] as $keys => $values)  
-                               {  
-                          ?>  
-                          <tr>  
-                               <td><?php echo $values['item_roomType']; ?></td>
-                               <td><?php echo $values["item_bedType"]; ?></td>
-                               <td><?php echo $values["item_noOfperson"]; ?></td>
-							   <td>$ <?php echo $values["item_roomPrice"]; ?></td>  
-                             <!--  <td>$ <?php echo number_format($values["item_quantity"] * $values["item_price"], 2); ?></td>  -->
-                               <td><a href="mytest.php?action=delete&id=<?php echo $values["item_id"]; ?>"><span class="text-danger">Remove</span></a></td>  
-                          </tr>  
-                          <?php  
-                                  //  $total = $total + ($values["item_quantity"] * $values["item_price"]);  
-                               }  
-                          ?>  
-                          <tr>  
-                               <td colspan="3" align="right">Total</td>  
-                               <td align="right">$ <?php echo number_format($total, 2); ?></td>  
-                               <td></td>  
-                          </tr>  
-                          <?php  
-                          }  
-                          ?>  
-                     </table>  
-                </div>  
-           </div>  
-           <br />  
-	</body>
-</head>
+      $(".btnReserve").one({
+          click: reserveRoom
+      })
+
+      $("#btnBook").on({
+          click: bookRoom
+      })
+
+
+      
+
+      function reserveRoom(){ //store selected rooms in array for query later
+            
+          var rName = $(this).attr('data-id');
+          console.log("roomName: "+ rName);
+          arrId.push(rName);
+          //console.log("array: "+ arrId);
+      }
+
+      function bookRoom(){
+
+        if(arrId==""){
+
+          alert("Select a room first.");
+
+        }else{
+
+          $('#booking-modal').modal('toggle');
+          //console.log(arrId);
+
+          $.ajax({
+            url: "getResData.php",
+            method: "POST",
+            data: {
+              action: 'transferIds',
+              arrayId: arrId
+            },
+            success: function(response){
+              var data = response;
+              //console.log(response);
+              displayBookingModal(data);
+
+            },
+            error: function(response){
+              console.log(response);
+            }
+           
+          })
+
+        }
+      }
+
+      function displayBookingModal(data){
+          var resData = data;
+          console.log(resData);
+
+      }
+
+
+  });
+
+</script>
