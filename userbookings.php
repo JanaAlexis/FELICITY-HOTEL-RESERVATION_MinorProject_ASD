@@ -24,7 +24,6 @@
 				  <th>Check In</th>
 				  <th>Check Out</th>
 				  <th>Total booked person</th>
-				  <th>Total Price</th>
 				  <th>Status</th>
 				  <th>Action</th>
 				<!--  <th>Update</th> -->
@@ -33,8 +32,9 @@
 			  <tbody id="item-tbl-body">
 				<!-- to be filled dynamically -->
 
+				<tr><td>totalprice();</td></td>
 
-				
+
 			  </tbody>
 		  </table>
 	  </div>
@@ -54,43 +54,10 @@
 			    <!-- Label shows if some data entered is invalid -->
 			    <label class="label label-danger" id="updateDatainvalid"></label></br>
 			        
-			        <form method="post" action="admin-functions.php?action=update" enctype="multipart/form-data">
+			        <form method="post" action="userfunction.php?action=update" enctype="multipart/form-data">
 			            <div class="form-group">
 
 			            <input type="hidden" id="edit- bookingrefno" class="form-control" name=" bookingrefno"/>
-
-			            <label>First Name</label>
-			            <input type="text" id="edit-firstName" class="form-control" placeholder="First name" name="firstName" required /></br>
-
-			            <label>Last Name</label>
-			            <input type="text" id="edit-lastName" class="form-control" placeholder="Last name" name="lastName" required /></br>
-
-			            <label>Email</label>
-			            <input type="text" id="edit-email" class="form-control" placeholder="Email" name="email" required /></br>
-
-			                  
-			            <label>Room Name</label>
-			            <input type="text" id="edit-roomName" class="form-control" placeholder="Room name" name="roomName" required /></br>
-
-			            <label>Room Type</label>
-						<div class="dropdown">
-							<select class= "btn btn-sm btn-success" name="roomType" id="edit-roomType">
-								<option value="1">Deluxe</option>
-								<option value="2">Luxury</option>
-								<option value="3">Suite</option>
-								<option value="4">Superior</option>
-							</select>
-						</div>
-
-			            <label>Room Price</label>
-			            <span><i>  (in Php)</i></span><input type="number" id="edit-roomPrice" class="form-control" min="0" step="0.01" value="0.00" name="roomPrice"/></br>
-
-			            <label>Charge for Extra Person</label>
-			            <span><i>  (in Php)</i></span><input type="number" id="edit-addPersonPrice" class="form-control" min="0" step="0.01" value="0.00" name="addPersonPrice"/></br>
-			                  
-
-			            <label>Maximum number of person</label>
-			            <input type="number" id="edit-numPerson" class="form-control" min="1" value="1" name="numPersons"/></br>
 
 
 			            <label>Check In</label>
@@ -99,15 +66,7 @@
 			            <label>Check Out</label>
 			            <input type="date" id="edit-checkOut" class="form-control" placeholder="check out" name="checkOut" required /></br>
 
-			                  
-			            <label>Total Booked Person</label>
-			            <input type="text" id="edit-expectedPerson" class="form-control" placeholder="total number of person" name="expectedPerson" required /></br>
-
-			            <label>Total Price</label>
-			            <span><i>  (in Php)</i></span><input type="number" id="edit-totalPrice" class="form-control" min="0" step="0.01"value="0.00" name="totalPrice"/></br>
-
-
-
+			      
 			            <button class="btn btn-success pull-right" type="submit" name="submit"> Update Record </button>
 			            </div>
 			        </form>
@@ -161,7 +120,7 @@
                tRow += "<td class='tbl-num'>" + data[x].checkOut + "</td>";
                tRow += "<td class='tbl-num'>" + data[x].expectedPerson + "</td>";
                tRow += "<td class='tbl-num'>" + data[x].bStat + "</td>";
-          	   tRow += "<td><div class='actions-menu'><button type='button' class='btn btn-sm btn-default editRecordLink' data- bookingrefno='"+data[x].bookingRefNo+"' data-firstName='"+data[x].firstName+"' data-lastName='"+data[x].lastName+"' data-email='"+data[x].email+"' data-roomName='"+data[x].roomName+"' data-roomType='"+data[x].roomType+"' data-roomPrice='"+data[x].roomPrice+"' data-addPersonPrice='"+data[x].addPersonPrice+"' data-numPerson='"+data[x].noOfperson+"' data-checkIn='"+data[x].checkIn+"' data-checkOut='"+data[x].checkOut+"' data-expectedPerson='"+data[x].expectedPerson+"'  data-bStat='"+data[x].bStat+"' data-toggle='modal' data-target='#editbook-modal' id='"+bookingrefno+"'><i class='fa fa-edit' style='color:green;'></i></button></div></td>";
+          	   tRow += "<td><div class='actions-menu'><button type='button' class='btn btn-sm btn-default editRecordLink' data- bookingrefno='"+data[x].bookingRefNo+"' data-checkIn='"+data[x].checkIn+"' data-checkOut='"+data[x].checkOut+"' data-expectedPerson='"+data[x].expectedPerson+"'  data-bStat='"+data[x].bStat+"' data-toggle='modal' data-target='#editbook-modal' id='"+bookingrefno+"'><i class='fa fa-edit' style='color:green;'></i></button></div></td>";
        		   tRow += "</tr>";
 
         itemTbl.append(tRow);
@@ -210,28 +169,6 @@
 			$('#edit-expectedPerson').val(expectedperson);
             $('#edit-bStat').val(bStat);
       }
-
-      function totalprice(){
-		var bookingrefno = $(this).attr("id");
- 		var roomprice = $(this).attr("data-roomPrice");
-		var addpersonprice = $(this).attr("data-addPersonPrice");
- 		var numperson = $(this).attr("data-numPerson")
-		var expectedperson = $(this).attr("data-expectedPerson");
-
-		if(numperson<expectedperson){
-			var diff = expectedperson - numperson;
-			var additional = addpersonprice*diff;
-			var totalprice = additional + roomprice;
-
-		}
-
-
-
-
-
-      }
-
-  	 
 
 
  });

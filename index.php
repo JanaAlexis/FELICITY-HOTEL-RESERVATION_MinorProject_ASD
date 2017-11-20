@@ -41,6 +41,7 @@
 			                    <ul class="dropdown-menu">
 			                        <li id="dashboard-li">
 			                            <a href="admindashboard.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+			                            <butt
 			                        </li>
 			                        <li id="booking-li">
 			                            <a href="userbookings.php"><i class="fa fa-fw fa-user"></i> My Bookings</a>
@@ -153,14 +154,17 @@
 			<!-- Wrapper for slides -->
 				<div class="carousel-inner" role="listbox">
 					<div class="item active">
-					    <img src="images/1b.jpg" alt="...">
+					   <img src="images/1b.jpg" alt="...">
 					</div>
+
 					<div class="item">
 					    <img src="images/1c.jpg" alt="...">
 					</div>
+
 					<div class="item">
 					    <img src="images/1a.jpg" alt="...">
 					</div>
+					
 				</div>
 			<!-- end of wrapper -->
 			<!-- Controls -->
@@ -174,7 +178,7 @@
 				</a>
 			</header>
 			<!-- end of controls -->
-			<div id="about-us" style="text-align: center; padding: 5px;">
+			<div id="about-us" style="text-align: center; padding: 50px;">
 				<h1>About Us</h1>
 				<p>
 					We’ve been expecting you! We know what it means to come from a long and tiring trip and to long for a genuine welcome, a good drink and a comfortable bed to stretch out on. If you enjoy having a peaceful and relaxing trip, you’ve come to the right place! The Felicity Hotel is situated along the sea line of Madagascar. You can see the beautiful view of the city and spectacularly set overlooking Kornel Kiss Beach and with views of the surrounding Chavez Hills. We offer a choice of four luxurious rooms, each as unique and distinctive as the individuals who choose to stay with us. Modern design, clean lines are perfectly complemented by the splendor of the natural surroundings. The intimate nature of our pleasant hotel means that we are dedicated to making your stay with us nothing short of remarkable. 
@@ -182,6 +186,26 @@
 			</div>
 		</div>
 	</div>
+
+	<footer class="spacer">
+        <div class="container">
+            <div class="row" align="center">
+                 <div class="social">
+                    <a href="#"><i class="fa fa-facebook-square" data-toggle="tooltip" data-placement="top" data-original-title="facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"  data-toggle="tooltip" data-placement="top" data-original-title="instragram"></i></a>
+                    <a href="#"><i class="fa fa-twitter-square" data-toggle="tooltip" data-placement="top" data-original-title="twitter"></i></a>
+                    <a href="#"><i class="fa fa-pinterest-square" data-toggle="tooltip" data-placement="top" data-original-title="pinterest"></i></a>
+                    <a href="#"><i class="fa fa-tumblr-square" data-toggle="tooltip" data-placement="top" data-original-title="tumblr"></i></a>
+                    <a href="#"><i class="fa fa-youtube-square" data-toggle="tooltip" data-placement="top" data-original-title="youtube"></i></a>
+                 </div>
+            </div>
+            <!--/.row--> 
+        </div>
+        <!--/.container-->    
+    
+    <!--/.footer-bottom--> 
+</footer>
+
 
 <?php
 	include_once 'footer.php';
