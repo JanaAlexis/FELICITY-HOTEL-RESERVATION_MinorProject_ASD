@@ -1,10 +1,41 @@
 <?php
-	include 'header.php';
-	include 'navbar.php';
-
+    include 'header.php';
+    include 'navbar.php';
+    //echo $_SESSION['userStatus'];
 ?>
-
 <!-- Table that displays the record list -->
+	<br><h3>Reservation List</h3><br>
+	<div class="panel panel-default">
+	  <div class="panel-heading"></div>
+	  <div class="panel-body">
+		  <table class="table table-hover" id="item-list-tbl">
+			<thead>
+			   <tr>
+				  <th>Reservation ID</th>
+				  <th>First Name</th>
+				  <th>Last Name</th>
+				  <th>Email</th>
+				  <th>Room Type</th>
+     		      <th>Room Name</th>
+    		      <th>Room Price</th>
+     		      <th>Exceed person payment</th>
+     		      <th>Maximum Number of Person</th>
+				  <th>Check In</th>
+				  <th>Check Out</th>
+				  <th>Total booked person</th>
+				  <th>Reservation Date</th>
+				  <th>Status</th>
+				  <th>Action</th>
+				<!--  <th>Update</th> -->
+				</tr>
+			  </thead>
+			  <tbody id="reserve-tbl-body">
+				<!-- to be filled dynamically -->
+			  </tbody>
+		  </table>
+	  </div>
+	</div>
+
 	<br><h3>Booked List</h3><br>
 	<div class="panel panel-default">
 	  <div class="panel-heading"></div>
@@ -24,16 +55,15 @@
 				  <th>Check In</th>
 				  <th>Check Out</th>
 				  <th>Total booked person</th>
+				  <th>Total Price</th>
 				  <th>Status</th>
-				  <th>Action</th>
 				<!--  <th>Update</th> -->
 				</tr>
 			  </thead>
-			  <tbody id="item-tbl-body">
+			  <tbody id="book-tbl-body">
 				<!-- to be filled dynamically -->
 
-				<tr><td>totalprice();</td></td>
-
+				
 
 			  </tbody>
 		  </table>
@@ -41,135 +71,147 @@
 	</div>
 <!-- end of display list -->
 
-<!-- end of display list -->
-<div id="editbook-modal" class="modal fade in" tabindex="-1" role="dialog">
-	  <div class="modal-dialog modal-sm" role="document">
-		  <div class="modal-content">
-			  <div class="modal-header">
-				  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					  <h4 class="modal-title">Update Booking Record </h4>
-			  </div>
-			  <!-- Edit room data modal -->
-			<div class="modal-body">
-			    <!-- Label shows if some data entered is invalid -->
-			    <label class="label label-danger" id="updateDatainvalid"></label></br>
-			        
-			        <form method="post" action="userfunction.php?action=update" enctype="multipart/form-data">
-			            <div class="form-group">
-
-			            <input type="hidden" id="edit- bookingrefno" class="form-control" name=" bookingrefno"/>
-
-
-			            <label>Check In</label>
-			            <input type="date" id="edit-checkIn" class="form-control" placeholder="check in" name="checkIn" required /></br>
-
-			            <label>Check Out</label>
-			            <input type="date" id="edit-checkOut" class="form-control" placeholder="check out" name="checkOut" required /></br>
-
-			      
-			            <button class="btn btn-success pull-right" type="submit" name="submit"> Update Record </button>
-			            </div>
-			        </form>
-			</div>
-		  </div>
-	  </div>
-</div>
-
-
-
 <?php
     include 'footer.php';
 ?>
 
-<?php //PHP query for getting record list
 
-  $selectquery = "SELECT bookingRefNo, c.firstName, c.lastName, c.email, r.roomType, rd.roomName, rd.roomPrice, rd.addPersonPrice,rd.noOfperson ,checkIn,checkOut, expectedPerson, bd.status as bStat from booking_details bd join customer c on bd.customerID = c.customerID join room_details rd on bd.roomID=rd.roomID join room r on rd.roomTypeId = r.roomTypeId";
-  $res = mysqli_query($conn, $selectquery);
-  $data;
+<!--reservation-->
+
+<?php //PHP query for getting reservation list
+
+$user = $_SESSION['userId'];
+
+
+  $resquery = "SELECT reservationID, c.firstName, c.lastName, c.email, r.roomType, rd.roomName, rd.roomPrice, rd.addPersonPrice,rd.noOfperson ,checkIn,checkOut, expectedPerson,reservationDate, rsd.status as rsdStat from reservation_details rsd join customer c on rsd.customerID = c.customerID join room_details rd on rsd.roomName=rd.roomName join room r on rd.roomTypeId = r.roomTypeId WHERE  rsd.customerID = '$user' AND rsd.status='Pending' Group by rsd.roomName";
+  $res = mysqli_query($conn, $resquery);
+  $resdata;
   if($res){
     $x=0;
-      while($result = mysqli_fetch_assoc($res)){
-        $data[$x] = $result;
+      while($resresult = mysqli_fetch_assoc($res)){
+        $resdata[$x] = $resresult;
+        $x++;
+        
+        
+      }
+  }
+?> <!-- end of reservation list php -->
+
+
+<?php //PHP query for getting book list
+
+  $bookquery = "SELECT bookingRefNo, c.firstName, c.lastName, c.email, r.roomType, rd.roomName, rd.roomPrice, rd.addPersonPrice,rd.noOfperson ,checkIn,checkOut, bd.noOfperson as bookedPerson,totalPrice, bd.status as bStat from booking_details bd join customer c on bd.customerID = c.customerID join room_details rd on bd.roomName=rd.roomName join room r on rd.roomTypeId = r.roomTypeId WHERE  bd.customerID = '$user' GROUP BY bd.roomName";
+  $bookres = mysqli_query($conn, $bookquery);
+  $bookdata;
+  if($bookres){
+    $x=0;
+      while($bookresult = mysqli_fetch_assoc($bookres)){
+        $bookdata[$x] = $bookresult;
         $x++;
       }
   }
 
-?> <!-- end of record list php -->
+?> <!-- end of Book list php -->
+
 
 <script type="text/javascript"> //Javascript/jquery when opening document
   $(document).ready(function(){
 
-    var data = <?php echo json_encode($data) ?>; // Populate record data in table using the data from php query
-   	var itemTbl = $("#item-tbl-body");
-      itemTbl.html("");
-      var bookingrefno = 0;
+    var resdata = <?php echo json_encode($resdata) ?>; // Populate record data in table using the data from php query
+   	console.log(resdata);
 
-         for(var x=0;x<data.length;x++){
-          bookingrefno=data[x].bookingRefNo;
+      var rsvTbl = $("#reserve-tbl-body");
+      rsvTbl.html("");
+      var reservationId = 0;
+
+         for(var x=0;x<resdata.length;x++){
+          reservationId=resdata[x].reservationID;
            var tRow = "<tr>";
-               tRow += "<td>" + data[x].bookingRefNo + "</td>";
-               tRow += "<td>" + data[x].firstName + "</td>";
-               tRow += "<td>" + data[x].lastName + "</td>";
-               tRow += "<td>" + data[x].email + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomName + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomType + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomPrice + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].addPersonPrice + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].noOfperson + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].checkIn + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].checkOut + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].expectedPerson + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].bStat + "</td>";
-          	   tRow += "<td><div class='actions-menu'><button type='button' class='btn btn-sm btn-default editRecordLink' data- bookingrefno='"+data[x].bookingRefNo+"' data-checkIn='"+data[x].checkIn+"' data-checkOut='"+data[x].checkOut+"' data-expectedPerson='"+data[x].expectedPerson+"'  data-bStat='"+data[x].bStat+"' data-toggle='modal' data-target='#editbook-modal' id='"+bookingrefno+"'><i class='fa fa-edit' style='color:green;'></i></button></div></td>";
-       		   tRow += "</tr>";
+               tRow += "<td>" + resdata[x].reservationID + "</td>";
+               tRow += "<td>" + resdata[x].firstName + "</td>";
+               tRow += "<td>" + resdata[x].lastName + "</td>";
+               tRow += "<td>" + resdata[x].email + "</td>";
+               tRow += "<td>" + resdata[x].roomType + "</td>";
+               tRow += "<td>" + resdata[x].roomName + "</td>";
+               tRow += "<td class='tbl-num'>" + resdata[x].roomPrice + "</td>";
+               tRow += "<td class='tbl-num'>" + resdata[x].addPersonPrice + "</td>";
+               tRow += "<td class='tbl-num'>" + resdata[x].noOfperson + "</td>";
+               tRow += "<td>" + resdata[x].checkIn + "</td>";
+               tRow += "<td>" + resdata[x].checkOut + "</td>";
+               tRow += "<td class='tbl-num'>" + resdata[x].expectedPerson + "</td>";
+               tRow += "<td>" + resdata[x].reservationDate + "</td>";
+               tRow += "<td>" + resdata[x].rsdStat + "</td>";
+               tRow += "<td>" + "<button type='button' title='Cancel' class='btn btn-danger cancel' id='"+reservationId+"'><span class='glyphicon glyphicon-trash'></span></button>" + "</td>";
+               tRow += "</tr>";
 
-        itemTbl.append(tRow);
+         rsvTbl.append(tRow);
         }   // end of populating data
 
-        $(".editRecordLink").on({
-          click: editRecord
-      	})
+         $(".cancel").on({
+          click: cancelReservation
+   	    })
+
+		function cancelReservation(){
+        var reservationId = $(this).attr("id");
+
+	      if(confirm('Cancel reservation?')==true){
+	          console.log("reservationID: " + reservationId);
+	    
+
+	          $.ajax({
+	              url: "res-function.php",
+	              method: "POST",
+	              data: {
+	                action: 'cancel',
+	                cancel: reservationId
+	              },
+	              success: function(response){
+	                console.log(response);
+	                alert("Cancelled!");
+	                location.reload();
+	              },
+	              error: function(response){
+	                console.log(response);
+	              }
+	             
+	            })
+
+	      }else{
+	        location.reload();
+	      }
+	        
+
+	     }
 
 
-        function editRecord(){
-            var bookingrefno = $(this).attr("id");
-            var firstname = $(this).attr("data-firstName");
-			var lastname = $(this).attr("data-lastName");
-            var email = $(this).attr("data-email");
-            var roomname = $(this).attr("data-roomName");
-            var roomtype = $(this).attr("data-roomType");
-            var roomprice = $(this).attr("data-roomPrice");
-            var addpersonprice = $(this).attr("data-addPersonPrice");
-            var numperson = $(this).attr("data-numPerson")
-           	var checkin = $(this).attr("data-checkIn");
-           	var checkout = $(this).attr("data-checkOut");
-           	var expectedperson = $(this).attr("data-expectedPerson");
-            var bStat = $(this).attr("data-bStat");
-            
-            $('#edit-bookinrefno').val(bookingrefno);
-            $('#edit-firstName').val(firstname);
-            $('#edit-lastName').val(lastname);
-            $('#edit-email').val(email);
+	    var bookdata = <?php echo json_encode($bookdata) ?>; // Populate record data in table using the data from php query
+	
+		var bookTbl = $("#book-tbl-body");
+    	bookTbl.html("");
+      	for(var x=0;x<bookdata.length;x++){
+          bookingrefno=bookdata[x].bookingRefNo;
+           var tRow = "<tr>";
+               tRow += "<td>" + bookdata[x].bookingRefNo + "</td>";
+               tRow += "<td>" + bookdata[x].firstName + "</td>";
+               tRow += "<td>" + bookdata[x].lastName + "</td>";
+               tRow += "<td>" + bookdata[x].email + "</td>";
+               tRow += "<td>" + bookdata[x].roomName + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].roomType + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].roomPrice + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].addPersonPrice + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].noOfperson + "</td>";
+               tRow += "<td>" + bookdata[x].checkIn + "</td>";
+               tRow += "<td>" + bookdata[x].checkOut + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].bookedPerson + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].totalPrice + "</td>";
+               tRow += "<td class='tbl-num'>" + bookdata[x].bStat + "</td>";
 
-            $('#edit-roomName').val(roomname);
-			if(roomtype=='Deluxe'){
-                $('#edit-roomType').val('1');
-            }else if(roomtype=='Luxury'){
-                $('#edit-roomType').val('2');
-            }else if(roomtype=='Suite'){
-                $('#edit-roomType').val('3');
-            }else{
-                $('#edit-roomType').val('4');
-            }
-            $('#edit-roomPrice').val(roomprice);
-            $('#edit-addPersonPrice').val(addpersonprice);
-             $('#edit-numPerson').val(numperson);
-            $('#edit-checkIn').val(checkin);
-            $('#edit-checkOut').val(checkout);
-			$('#edit-expectedPerson').val(expectedperson);
-            $('#edit-bStat').val(bStat);
-      }
+        bookTbl.append(tRow);
+        }   // end of populating data
 
 
- });
+
+
+	});
+	
 </script>

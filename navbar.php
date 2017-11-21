@@ -1,4 +1,12 @@
-<nav class="navbar navbar-inverse nav-container">
+<?php
+    
+    if(!(isset($_SESSION['userStatus']))){
+        $_SESSION['userStatus'] = 0; //tracks who is the user
+    }
+    //echo $_SESSION['userStatus'];
+?>
+
+<nav class="navbar navbar-default nav-container">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".main-nav">
@@ -14,29 +22,22 @@
                 <a href="../felicity/"> Home </a>
             </li>
             <li>
-                <a href="index.php#about-us"> About </a>
+                <a href="../felicity/"> About </a>
             </li>
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown"> Rooms <i class="caret"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="rooms.php">Deluxe</a></li>
-                        <li class="divider"></li>
-                        <li><a href="rooms.php">Luxury</a></li>
-                        <li class="divider"></li>
-                        <li><a href="rooms.php">Suite</a></li>
-                        <li class="divider"></li>
-                        <li><a href="rooms.php">Superior</a></li>
-                    </ul>
+            <li>
+                <a href="roomdetails.php"> Rooms </a>
             </li>
         </ul>
     </div>
+
+<!-- SIDE NAVIGATION(DROPDOWN) -->
     <div class="navbar-right">
         <ul class="nav navbar-nav">
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle user-icon" data-toggle="dropdown"><i class="fa fa-user"></i></a>
                     <ul class="dropdown-menu">
                         <li id="dashboard-li">
-                            <a href="admindashboard.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                            <a href="reservation-list.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                         </li>
                         <li id="booking-li">
                             <a href="userbookings.php"><i class="fa fa-fw fa-user"></i> My Bookings</a>
@@ -58,7 +59,9 @@
     </div>
   </div>
 </nav>
+<!-- SIDE NAVIGATION(DROPDOWN) -->
 
+<!--ADMIN NAVIGATION-->
 <div id="dashboard-header" class="col-lg-12">
 
     <header><h2>Dashboard</h2></header>
@@ -67,13 +70,20 @@
             <i class="fa fa-dashboard"></i> Dashboard
         </li>
         <li>
-             <a href= "dashboard-users.php">Users</a>
+             <a href= "bookings.php">Bookings</a>
+        </li>
+        <li>
+             <a href= "reservation-list.php">Reservation</a>
         </li>
         <li>
              <a href= "admindashboard-roomdetails.php">Room Details</a>
         </li>
+        <li>
+             <a href= "dashboard-users.php">Users</a>
+        </li>
     </ol>
 </div>
+<!-- ADMIN NAVIGATION -->
 
 
 <!-- Login Modal -->
@@ -146,15 +156,6 @@
 
 <!-- jQuery -->
 <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-
-<?php
-    
-    if(!(isset($_SESSION['userStatus']))){
-        $_SESSION['userStatus'] = 0; //tracks who is the user
-    }
-    //$_SESSION['userStatus'] = 2;
-    //echo $_SESSION['userStatus'];
-?>
 
     <script>
         $(document).ready(function(){

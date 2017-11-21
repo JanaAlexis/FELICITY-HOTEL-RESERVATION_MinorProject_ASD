@@ -1,5 +1,9 @@
 <?php
     include 'header.php';
+    if($_SESSION['userStatus']<>1){
+    	session_destroy();
+    	header("Location: ../felicity/");
+    }
     include 'navbar.php';
     //echo $_SESSION['userStatus'];
 ?>
@@ -63,7 +67,7 @@
 			</div>
 	</div>
 </div>
-<!-- enf of confirm customer status modal -->
+<!-- end of confirm customer status modal -->
 
 
 <?php

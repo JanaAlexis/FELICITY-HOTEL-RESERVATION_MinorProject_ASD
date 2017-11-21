@@ -35,7 +35,7 @@
                                         $_SESSION['lastname'] = $row['lastName'];
                                         $_SESSION['user'] = $row['username'];
                                     }
-                                    header("Location: admindashboard.php");
+                                    header("Location: reservation-list.php");
                                     //echo $_SESSION['userStatus'];
                                 }
                             }else{
@@ -60,7 +60,7 @@
                                         $_SESSION['lastname'] = $row['lastName'];
                                         $_SESSION['user'] = $row['email'];
                                         }
-                                        header("Location: rooms.php");
+                                        header("Location: userbookings.php");
                                     }
                                 }else{
                                     echo "Customer login error.";
@@ -120,7 +120,7 @@
                                         $_SESSION['user'] = $rows['email'];
                                         unset($_SESSION['email']);
                                         
-                                        header("Location: rooms.php?page=signup&msg=success");
+                                        header("Location: roomdetails.php?page=signup&msg=success");
                                     }
                                 }else{
                                     $_SESSION['firstname'] = $firstName;

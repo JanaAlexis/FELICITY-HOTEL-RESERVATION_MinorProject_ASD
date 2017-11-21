@@ -35,16 +35,13 @@
                           $imgData =addslashes(file_get_contents($_FILES['image']['tmp_name']));
                           $imageProperties = getimageSize($_FILES['image']['tmp_name']);
 
-                            if($single > 0){
+                          $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','1','$single','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
+                          $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
-                                $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','1','$single','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
-                               $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
-
-                            }
-                            if($double > 0){
-                               $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','2','$double','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
-                               $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
-                            }
+                            
+                          $query = "INSERT INTO room_details (roomName, roomTypeId, bedID, bedCount, noOfperson, roomPrice, addPersonPrice, imgType, imgData, status) VALUES ('$roomname','$roomtype','2','$double','$persons','$roomprice','$addpersonprice','{$imageProperties['mime']}', '{$imgData}', '$status')";
+                          $insertquery = mysqli_query($conn, $query) or die(mysqli_error($conn));
+                           
                             header("Location: admindashboard-roomdetails.php");
 
                         }else{
