@@ -17,4 +17,6 @@ if(isset($_GET['msg'])){
 	echo "Cannot load image.";
 }
 
+//<img src="showimage.php?msg=<?php echo $roomId ?";
+
 ?>

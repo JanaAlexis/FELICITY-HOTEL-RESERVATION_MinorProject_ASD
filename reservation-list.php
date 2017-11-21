@@ -1,5 +1,9 @@
 <?php
     include 'header.php';
+    if($_SESSION['userStatus']<>1){
+      session_destroy();
+      header("Location: ../felicity/");
+    }
     include 'navbar.php';
     //echo $_SESSION['userStatus'];
 ?>
@@ -8,7 +12,7 @@
 	<div class="panel panel-default">
 	  <div class="panel-heading"></div>
 	  <div class="panel-body">
-		  <table class="table table-hover" id="item-list-tbl">
+		  <table class="table table-hover table-responsive" id="item-list-tbl">
 			<thead>
 			   <tr>
 				  <th>Reservation ID</th>
@@ -18,11 +22,12 @@
 				  <th>Room Type</th>
      		      <th>Room Name</th>
     		      <th>Room Price</th>
+              <th>Maximum Number of Person</th>
      		      <th>Exceed person payment</th>
-     		      <th>Maximum Number of Person</th>
+          <th>Expected Person Count</th>
+          <th>Total Price</th>
 				  <th>Check In</th>
 				  <th>Check Out</th>
-				  <th>Total booked person</th>
 				  <th>Reservation Date</th>
 				  <th>Status</th>
 				  <th>Action</th>
@@ -45,15 +50,18 @@
 
 <?php //PHP query for getting record list
 
-  $selectquery = "SELECT reservationID, c.firstName, c.lastName, c.email, r.roomType, rd.roomName, rd.roomPrice, rd.addPersonPrice,rd.noOfperson ,checkIn,checkOut, expectedPerson,reservationDate, rsd.status as rsdStat from reservation_details rsd join customer c on rsd.customerID = c.customerID join room_details rd on rsd.roomID=rd.roomID join room r on rd.roomTypeId = r.roomTypeId";
+  $selectquery = "SELECT reservationID, c.firstName, c.lastName, c.email, r.roomType, rd.roomName, rd.roomPrice, rd.addPersonPrice,rd.noOfperson, checkIn, checkOut, expectedPerson, totalPrice, reservationDate, rsd.status as rsdStat from reservation_details rsd join customer c on rsd.customerID = c.customerID join room_details rd on rsd.roomName=rd.roomName join room r on rd.roomTypeId = r.roomTypeId WHERE rsd.status='Pending' OR rsd.status='Cancelled' Group by rsd.roomName";
+
   $res = mysqli_query($conn, $selectquery);
-  $data;
-  if($res){
+  $data[]='';
+  if(mysqli_num_rows($res) > 0){
     $x=0;
       while($result = mysqli_fetch_assoc($res)){
         $data[$x] = $result;
         $x++;
       }
+  }else{
+    $data[0] = 0;
   }
 
 ?> <!-- end of record list php -->
@@ -63,100 +71,61 @@
   $(document).ready(function(){
 
     var data = <?php echo json_encode($data) ?>; // Populate record data in table using the data from php query
-   
+    if(data[0]==0){
       var itemTbl = $("#item-tbl-body");
       itemTbl.html("");
-      var reservationId = 0;
+      var tRow = "<i>No pending reservation/s.</i>";
+      itemTbl.append(tRow);
+    }else{
+        var itemTbl = $("#item-tbl-body");
+        itemTbl.html("");
+        var reservationId = 0;
 
-         for(var x=0;x<data.length;x++){
-          reservationId=data[x].reservationID;
-           var tRow = "<tr>";
-               tRow += "<td>" + data[x].reservationID + "</td>";
-               tRow += "<td>" + data[x].firstName + "</td>";
-               tRow += "<td>" + data[x].lastName + "</td>";
-               tRow += "<td>" + data[x].email + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomName + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomType + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].roomPrice + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].addPersonPrice + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].noOfperson + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].checkIn + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].checkOut + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].expectedPerson + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].reservationDate + "</td>";
-               tRow += "<td class='tbl-num'>" + data[x].rsdStat + "</td>";
-               tRow += "<td class='tbl-num'>" + "<button type='button' title='Approve' class='btn btn-info approve' data-id='"+reservationId+"'><span class='glyphicon glyphicon-edit'></span></button><button type='button' title='Cancel' class='btn btn-danger cancelBooking' id='"+reservationId+"'><span class='glyphicon glyphicon-trash'></span></button>" + "</td>";
-         /*     tRow += "<td><div class='actions-menu'><button type='button' class='btn btn-sm btn-default editRecordLink' data-reservationId='"+data[x].reservationId+"' data-firstName='"+data[x].firstName+"' data-lastName='"+data[x].lastName+"' data-email='"+data[x].email+"' data-roomName='"+data[x].roomName+"' data-roomType='"+data[x].roomType+"' data-roomPrice='"+data[x].roomPrice+"' data-addPersonPrice='"+data[x].addPersonPrice+"' data-numPerson='"+data[x].noOfperson+"' data-checkIn='"+data[x].checkIn+"' data-checkOut='"+data[x].checkOut+"' data-expectedPerson='"+data[x].expectedPerson+"' data-reservationDate='"+data[x].reservationDate+"' data-revStat='"+data[x].rsdStat+"' data-toggle='modal' data-target='#editroom-modal' id='"+reservationId+"'><i class='fa fa-edit' style='color:green;'></i></button></div></td>";
-       
-          */
-               tRow += "</tr>";
+           for(var x=0;x<data.length;x++){
+            reservationId=data[x].reservationID;
+             var tRow = "<tr>";
+                 tRow += "<td>" + data[x].reservationID + "</td>";
+                 tRow += "<td>" + data[x].firstName + "</td>";
+                 tRow += "<td>" + data[x].lastName + "</td>";
+                 tRow += "<td>" + data[x].email + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].roomType + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].roomName + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].roomPrice + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].noOfperson + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].addPersonPrice + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].expectedPerson + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].totalPrice + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].checkIn + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].checkOut + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].reservationDate + "</td>";
+                 tRow += "<td class='tbl-num'>" + data[x].rsdStat + "</td>";
 
-         itemTbl.append(tRow);
-        }   // end of populating data
-    
+                 if(data[x].rsdStat == 'Pending'){
+                    tRow += "<td class='tbl-num'>" + "<button type='button' title='Approve Reservation' class='btn btn-sm btn-default approve' data-id='"+reservationId+"'><i class='fa fa-check' style='color:green;'></i></button><button type='button' title='Remove Reservation' class='btn btn-sm btn-default cancelBooking' id='"+reservationId+"'><i class='fa fa-times' style='color:red;'></i></button>" + "</td>";
+                 }else{
+                    tRow += "<td class='tbl-num'>" + "<button type='button' title='Approve Cancellation' class='btn btn-sm btn-default cancelBooking' id='"+reservationId+"'><i class='fa fa-check' style='color:green;'></i></button>" + "</td>";
+                 }
+                 tRow += "</tr>";
 
-      $(".editRecordLink").on({
-          click: editRecord
-      })
+              itemTbl.append(tRow);
+          }         // end of populating data
 
-      $(".approve").on({
-          click: approve
-      })
+        $(".approve").on({
+            click: approve
+        })
 
-      $(".cancelBooking").on({
-          click: cancelBooking
-      })
+        $(".cancelBooking").on({
+            click: cancelBooking
+        })
 
-
-      function editRecord(){
-            var reservationId = $(this).attr("id");
-            var firstname = $(this).attr("data-firstName");
-			var lastname = $(this).attr("data-lastName");
-            var email = $(this).attr("data-email");
-            var roomname = $(this).attr("data-roomName");
-            var roomtype = $(this).attr("data-roomType");
-            var roomprice = $(this).attr("data-roomPrice");
-            var addpersonprice = $(this).attr("data-addPersonPrice");
-            var numperson = $(this).attr("data-numPerson")
-           	var checkin = $(this).attr("data-checkIn");
-           	var checkout = $(this).attr("data-checkOut");
-           	var expectedperson = $(this).attr("data-expectedPerson");
-           	var reservationdate = $(this).attr("data-reservationDate");
-            var rsdStat = $(this).attr("data-rsdStat");
-            
-            $('#edit-reservationId').val(reservationId);
-            $('#edit-firstName').val(firstname);
-            $('#edit-lastName').val(lastname);
-            $('#edit-email').val(email);
-
-            $('#edit-roomName').val(roomname);
-			if(roomtype=='Deluxe'){
-                $('#edit-roomType').val('1');
-            }else if(roomtype=='Luxury'){
-                $('#edit-roomType').val('2');
-            }else if(roomtype=='Suite'){
-                $('#edit-roomType').val('3');
-            }else{
-                $('#edit-roomType').val('4');
-            }
-            $('#edit-roomPrice').val(roomprice);
-            $('#edit-addPersonPrice').val(addpersonprice);
-             $('#edit-numPerson').val(numperson);
-            $('#edit-checkIn').val(checkin);
-            $('#edit-checkOut').val(checkout);
-			$('#edit-expectedperson').val(expectedperson);
-            $('#edit-reservationDate').val(reservationdate);
-            $('#edit-rsdStat').val(rsdStat);
-      }
-
+    }
       function approve(){
-    //  	var arrRsdId = [];
-      	var reservationId = $(this).attr("data-id");
-	    console.log("reservationID: " + reservationId);
-		//arrRsdId.push(reservationId);
-    //    console.log("array: "+ arrRsdId);
+    
+       var reservationId = $(this).attr("data-id");
+	     console.log("reservationID: " + reservationId);
+		
 
-        $.ajax({
+      $.ajax({
             url: "res-function.php",
             method: "POST",
             data: {
@@ -164,21 +133,24 @@
               reserveId: reservationId
             },
             success: function(response){
-              //console.log(response);
+              //var data = JSON.parse(response);
+              console.log(response);
+              //console.log(data);
               alert("Booked!");
+              location.reload();
             },
             error: function(response){
               console.log(response);
             }
            
           })
-
+      
      }
 
       function cancelBooking(){
           
       var reservationId = $(this).attr("id");
-      if(confirm('Are you want to cancel reservation?')==true){
+      if(confirm('Cancel reservation?')==true){
           console.log("reservationID: " + reservationId);
     
 
@@ -191,7 +163,8 @@
               },
               success: function(response){
                 console.log(response);
-                //alert("Cancelled!");
+                alert("Cancelled!");
+                location.reload();
               },
               error: function(response){
                 console.log(response);

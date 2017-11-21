@@ -1,8 +1,13 @@
 <?php
 	include 'header.php';
+    if(!(isset($_SESSION['userStatus']))){
+        $_SESSION['userStatus'] = 0; //tracks who is the user
+    }
+    //$_SESSION['userStatus'] = 2;
+    //echo $_SESSION['userStatus'];
 ?>
     <div class="container-fluid">
-    		<nav class="navbar navbar-inverse nav-container">
+    		<nav class="navbar navbar-default nav-container">
 			  <div class="container-fluid">
 			    <div class="navbar-header">
 			        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".main-nav">
@@ -18,19 +23,10 @@
 			                <a href="#"> Home </a>
 			            </li>
 			            <li>
-			                <a href="index.php#about-us"> About </a>
+			                <a href="#"> About </a>
 			            </li>
-			            <li class="dropdown">
-			                <a href="" class="dropdown-toggle" data-toggle="dropdown"> Rooms <i class="caret"></i></a>
-			                    <ul class="dropdown-menu">
-			                        <li><a href="rooms.php#roomtype1">Deluxe</a></li>
-			                        <li class="divider"></li>
-			                        <li><a href="rooms.php#roomtype2">Luxury</a></li>
-			                        <li class="divider"></li>
-			                        <li><a href="rooms.php#roomtype3">Suite</a></li>
-			                        <li class="divider"></li>
-			                        <li><a href="rooms.php#roomtype4">Superior</a></li>
-			                    </ul>
+			            <li>
+			                <a href="roomdetails.php"> Rooms </a>
 			            </li>
 			        </ul>
 			    </div>
@@ -40,8 +36,7 @@
 			                <a href="#" class="dropdown-toggle user-icon" data-toggle="dropdown"><i class="fa fa-user"></i></a>
 			                    <ul class="dropdown-menu">
 			                        <li id="dashboard-li">
-			                            <a href="admindashboard.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-			                            <butt
+			                            <a href="reservation-list.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
 			                        </li>
 			                        <li id="booking-li">
 			                            <a href="userbookings.php"><i class="fa fa-fw fa-user"></i> My Bookings</a>
@@ -64,23 +59,6 @@
 			  </div>
 			</nav>
 
-			<div id="dashboard-header" class="col-lg-12">
-
-			    <header><h2>Dashboard</h2></header>
-			    <ol class="breadcrumb">
-			        <li>
-			            <i class="fa fa-dashboard"></i> Dashboard
-			        </li>
-			        <li>
-			             <a href= "dashboard-roomlist.php">Room List</a>
-			        </li>
-			        <li>
-			             <a href= "admindashboard-roomdetails.php">Room Details</a>
-			        </li>
-			    </ol>
-			</div>
-
-
 			<!-- Login Modal -->
 			<div id="login-modal" class="modal fade in" tabindex="-1" role="dialog">
 			    <div class="modal-dialog" role="document">
@@ -99,7 +77,6 @@
 			                    <input type="text" id="username" class="form-control login-info" placeholder="Email or Username" name="user" required autofocus/></br>
 			                    <input type ="password" id="" class="form-control login-info" placeholder="Password" name="password" required /></br>
 			                    <button class="btn btn-primary btn-block" type="submit" name="submit" id="loginBtn"> Login </button>
-			                    <p class="center">Forgot password? </p>
 			                    <p class="center">Don't have an account? <a href="#signup-modal" data-toggle="modal" data-dismiss="modal">Sign up</a></p>
 			                </form>
 			            </div>
@@ -149,22 +126,19 @@
 			</div>                      
 			<!-- end of sign up modal -->
 
-			<header id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 			
 			<!-- Wrapper for slides -->
 				<div class="carousel-inner" role="listbox">
 					<div class="item active">
-					   <img src="images/1b.jpg" alt="...">
+					    <img src="images/1a.jpg" alt="...">
 					</div>
-
+					<div class="item">
+					    <img src="images/1b.jpg" alt="...">
+					</div>
 					<div class="item">
 					    <img src="images/1c.jpg" alt="...">
 					</div>
-
-					<div class="item">
-					    <img src="images/1a.jpg" alt="...">
-					</div>
-					
 				</div>
 			<!-- end of wrapper -->
 			<!-- Controls -->
@@ -176,48 +150,38 @@
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 					<span class="sr-only">Next</span>
 				</a>
-			</header>
-			<!-- end of controls -->
-			<div id="about-us" style="text-align: center; padding: 50px;">
-				<h1>About Us</h1>
-				<p>
-					We’ve been expecting you! We know what it means to come from a long and tiring trip and to long for a genuine welcome, a good drink and a comfortable bed to stretch out on. If you enjoy having a peaceful and relaxing trip, you’ve come to the right place! The Felicity Hotel is situated along the sea line of Madagascar. You can see the beautiful view of the city and spectacularly set overlooking Kornel Kiss Beach and with views of the surrounding Chavez Hills. We offer a choice of four luxurious rooms, each as unique and distinctive as the individuals who choose to stay with us. Modern design, clean lines are perfectly complemented by the splendor of the natural surroundings. The intimate nature of our pleasant hotel means that we are dedicated to making your stay with us nothing short of remarkable. 
-				</p>
 			</div>
-		</div>
+			<!-- end of controls -->
 	</div>
 
-	<footer class="spacer">
-        <div class="container">
-            <div class="row" align="center">
-                 <div class="social">
-                    <a href="#"><i class="fa fa-facebook-square" data-toggle="tooltip" data-placement="top" data-original-title="facebook"></i></a>
-                    <a href="#"><i class="fa fa-instagram"  data-toggle="tooltip" data-placement="top" data-original-title="instragram"></i></a>
-                    <a href="#"><i class="fa fa-twitter-square" data-toggle="tooltip" data-placement="top" data-original-title="twitter"></i></a>
-                    <a href="#"><i class="fa fa-pinterest-square" data-toggle="tooltip" data-placement="top" data-original-title="pinterest"></i></a>
-                    <a href="#"><i class="fa fa-tumblr-square" data-toggle="tooltip" data-placement="top" data-original-title="tumblr"></i></a>
-                    <a href="#"><i class="fa fa-youtube-square" data-toggle="tooltip" data-placement="top" data-original-title="youtube"></i></a>
-                 </div>
-            </div>
-            <!--/.row--> 
-        </div>
-        <!--/.container-->    
-    
-    <!--/.footer-bottom--> 
-</footer>
+		<div id="about-us" style="text-align: center; padding: 50px;">
+		<h1>About Us</h1>
+		<p>
+			We’ve been expecting you! We know what it means to come from a long and tiring trip and to long for a genuine welcome, a good drink and a comfortable bed to stretch out on. If you enjoy having a peaceful and relaxing trip, you’ve come to the right place! The Felicity Hotel is situated along the sea line of Madagascar. You can see the beautiful view of the city and spectacularly set overlooking Kornel Kiss Beach and with views of the surrounding Chavez Hills. We offer a choice of four luxurious rooms, each as unique and distinctive as the individuals who choose to stay with us. Modern design, clean lines are perfectly complemented by the splendor of the natural surroundings. The intimate nature of our pleasant hotel means that we are dedicated to making your stay with us nothing short of remarkable. 
+		</p>
+	</div>	
 
+<div class="spacer">
+    <div class="container">
+        <div class="row" align="center">
+            <div class="social">
+                <a href="#"><i class="fa fa-facebook-square" data-toggle="tooltip" data-placement="top" data-original-title="facebook"></i></a>
+                <a href="#"><i class="fa fa-instagram"  data-toggle="tooltip" data-placement="top" data-original-title="instragram"></i></a>
+                <a href="#"><i class="fa fa-twitter-square" data-toggle="tooltip" data-placement="top" data-original-title="twitter"></i></a>
+                <a href="#"><i class="fa fa-pinterest-square" data-toggle="tooltip" data-placement="top" data-original-title="pinterest"></i></a>
+                <a href="#"><i class="fa fa-tumblr-square" data-toggle="tooltip" data-placement="top" data-original-title="tumblr"></i></a>
+                <a href="#"><i class="fa fa-youtube-square" data-toggle="tooltip" data-placement="top" data-original-title="youtube"></i></a>
+            </div>
+        </div>
+        <!--/.row--> 
+    </div>
+    <!--/.container-->    
+    <!--/.footer-bottom--> 
+</div>
+	
 
 <?php
 	include_once 'footer.php';
-?>
-
-<?php
-    
-    if(!(isset($_SESSION['userStatus']))){
-        $_SESSION['userStatus'] = 0; //tracks who is the user
-    }
-    //$_SESSION['userStatus'] = 2;
-    //echo $_SESSION['userStatus'];
 ?>
 
     <script>
